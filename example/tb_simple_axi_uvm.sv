@@ -20,6 +20,11 @@ module tb_simple_axi_uvm;
             end
         join
     end
+    assign sif.axi_arready = 1;
+    assign sif.axi_rready = 1;
+    assign sif.axi_bvalid = 1;
+    assign sif.axi_awready = 1;
+    assign sif.axi_wready = 1;
     initial begin
         `uvm_info("info", "Hello World from initial block", UVM_LOW)
         uvm_config_db#(virtual simple_axi_if)::set(uvm_root::get(), "*", "vif", sif);

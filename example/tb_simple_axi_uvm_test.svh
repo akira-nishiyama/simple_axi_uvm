@@ -12,6 +12,7 @@ class simple_axi_uvm_test_example extends uvm_test;
         uvm_report_info("TEST", "Hello World from class test");
         phase.raise_objection(this);
         seq.start(env.agent.sequencer);
+        env.agent.driver.wait_trans_done();
         phase.drop_objection(this);
     endtask
 endclass
