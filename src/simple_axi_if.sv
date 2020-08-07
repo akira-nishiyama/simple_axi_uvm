@@ -51,16 +51,18 @@ interface simple_axi_if(input logic aclk, input logic arstn);
     logic                                      axi_rready;
 
     assign axi_awsize   = 2;//fixed to 4byte transfer.
-    assign axi_awbusrt  = `C_AXI_BURST_INCR;//fixed to increment mode.
+    assign axi_awburst  = `C_AXI_BURST_INCR;//fixed to increment mode.
     assign axi_awlock   = `C_AXI_LOCK_NORMAL;//fixed to normal access mode.
     assign axi_awcache  = `C_AXI_CACHE_NORMAL_NON_CACHE_BUFFARABLE;//fixed to normal non-cachable buffarble.recommended in ug1037.
     assign axi_awprot   = 0;//fixed to 0. recommended in ug1037.
+    assign axi_awregion = 0;//fixed to 9. not supported.
     assign axi_awqos    = 0;//fixed to 0. not supported.
     assign axi_arsize   = 2;//fixed to 4byte transfer.
     assign axi_arburst  = `C_AXI_BURST_INCR;//fixed to increment mode.
     assign axi_arlock   = `C_AXI_LOCK_NORMAL;//fixed to normal access mode.
     assign axi_arcache  = `C_AXI_CACHE_NORMAL_NON_CACHE_BUFFARABLE;//fixed to normal non-cachable buffarable.recommended in ug1037.
     assign axi_arprot   = 0;//fixed to 0. recommended in ug1037.
+    assign axi_arregion = 0;//fixed to 0. not supported.
     assign axi_arqos    = 0;//fixed to 0. not supported.
 
 
