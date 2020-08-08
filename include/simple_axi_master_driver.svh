@@ -37,13 +37,12 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
         if(!uvm_config_db#(virtual simple_axi_if)::get(this, "", "vif", vif))
             `uvm_fatal("NOVIF",{"virtual interface must be set for: ",get_full_name(),".vif"});
         uvm_config_db#(bit)::get(this,"","axi_transaction_mode", transaction_mode);
-        if(transaction_mode == 0) uvm_report_info("CONFIG","single transaction mode");
-        else uvm_report_info("CONFIG", "burst transaction mode");
+        if(transaction_mode == 0) uvm_report_info("AXI-DRV-CONFIG","single transaction mode");
+        else uvm_report_info("AXI-DRV-CONFIG", "burst transaction mode");
     endfunction: build_phase
 
     task run_phase(uvm_phase phase);
         simple_axi_seq_item trans_item;
-        uvm_report_info("DRIVER", "Hi! I am sample_driver");
         @(posedge vif.arstn);// wait negate reset
         fork
             forever begin
@@ -117,7 +116,7 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
             wchannel_busy = 1;
             trans_item = wchannel.pop_front();
             for(int i = 0; i < trans_item.length + 1; ++i) begin
-                uvm_report_info("AXI-M-DRV-W", $sformatf("seq=%04d,wdata[%3d]=%08Xh",sequence_num, i, trans_item.data[i]));
+                uvm_report_info("AXI-M-DRV-W ", $sformatf("seq=%04d,wdata[%3d]=%08Xh",sequence_num, i, trans_item.data[i]));
                 vif.axi_wvalid <= 1'b1;
                 vif.axi_wdata  <= trans_item.data[i];
                 vif.axi_wstrb  <= 4'hf;
@@ -130,7 +129,7 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
             end
             vif.axi_wvalid <= 1'b0;
             vif.axi_wlast  <= 1'b0;
-            uvm_report_info("AXI-M-DRV-W", $sformatf("seq=%04d done",sequence_num));
+            uvm_report_info("AXI-M-DRV-W ", $sformatf("seq=%04d done",sequence_num));
             wchannel_busy = 0;
             ++sequence_num;
         end
@@ -140,17 +139,15 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
         simple_axi_seq_item trans_item;
         int sequence_num = 0;
         bchannel_busy = 0;
-        uvm_report_info("AXI-M-DRV-B", "bchannel init done.");
         vif.axi_bready <= 1'b1;//always ready
         forever begin
             wait(bchannel.size() != 0);
-            uvm_report_info("AXI-M-DRV-B", "bchannel accept.");
             bchannel_busy = 1;
             trans_item = bchannel.pop_front();
             forever begin
                 @(posedge vif.aclk) if(vif.axi_bvalid === 1) break;
             end
-            uvm_report_info("AXI-M-DRV-B", $sformatf("seq=%04d done",sequence_num));
+            uvm_report_info("AXI-M-DRV-B ", $sformatf("seq=%04d done",sequence_num));
             bchannel_busy = 0;
             ++sequence_num;
         end
@@ -163,8 +160,8 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
         forever begin
             wait(archannel.size() != 0);
             archannel_busy = 1;
-            uvm_report_info("AXI-M-DRV-AR", $sformatf("seq=%04d,ar_addr=%08Xh,ar_len=%04Xh",sequence_num, trans_item.addr, trans_item.length));
             trans_item = archannel.pop_front();
+            uvm_report_info("AXI-M-DRV-AR", $sformatf("seq=%04d,ar_addr=%08Xh,ar_len=%04Xh",sequence_num, trans_item.addr, trans_item.length));
             vif.axi_araddr  <= trans_item.addr;
             vif.axi_arlen   <= trans_item.length;
             vif.axi_arvalid <= 1'b1;
@@ -193,14 +190,17 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
                     @(posedge vif.aclk) if(vif.axi_rvalid === 1) break;
                 end
             end
-            uvm_report_info("AXI-M-DRV-R", $sformatf("seq=%04d done",sequence_num));
+            uvm_report_info("AXI-M-DRV-R ", $sformatf("seq=%04d done",sequence_num));
             rchannel_busy = 0;
             ++sequence_num;
         end
     endtask
 
-    task wait_trans_done();
-        wait(   (awchannel.size() == 0) &&
+    task automatic wait_trans_done();
+        forever begin
+            @(posedge vif.aclk);
+            if( 
+                (awchannel.size() == 0) &&
                 (wchannel.size()  == 0) &&
                 (bchannel.size()  == 0) &&
                 (archannel.size() == 0) &&
@@ -209,7 +209,18 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
                 (wchannel_busy    == 0) &&
                 (bchannel_busy    == 0) &&
                 (archannel_busy   == 0) &&
-                (rchannel_busy    == 0));
+                (rchannel_busy    == 0)) break;
+        end
+//        wait(   (awchannel.size() == 0) &&
+//                (wchannel.size()  == 0) &&
+//                (bchannel.size()  == 0) &&
+//                (archannel.size() == 0) &&
+//                (rchannel.size()  == 0) &&
+//                (awchannel_busy   == 0) &&
+//                (wchannel_busy    == 0) &&
+//                (bchannel_busy    == 0) &&
+//                (archannel_busy   == 0) &&
+//                (rchannel_busy    == 0));
     endtask
 
 endclass

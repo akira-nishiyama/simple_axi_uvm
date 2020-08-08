@@ -8,6 +8,8 @@
 //
 
 virtual class simple_axi_master_base_sequence extends uvm_sequence #(simple_axi_seq_item);
+    parameter C_AXI_ADDR_WIDTH = 32;
+    parameter C_AXI_DATA_WIDTH = 32;
     function new(string name="simple_axi_mster_base_sequence");
         super.new(name);
     endfunction
@@ -31,6 +33,14 @@ virtual class simple_axi_master_base_sequence extends uvm_sequence #(simple_axi_
         starting_phase.drop_objection(this);
         end
     endtask
+
+    task transfer_item( simple_axi_seq_item trans_item, logic[C_AXI_ADDR_WIDTH - 1 : 0] addr, logic[C_AXI_DATA_WIDTH - 1 : 0] data[$] = {0},
+                        logic[7:0] length, simple_axi_seq_item::simple_axi_access_type access_type);
+        trans_item = new( .addr(addr), .data(data), .length(length), .access_type(access_type));
+        start_item(trans_item);
+        finish_item(trans_item);
+    endtask
+
 endclass
 
 

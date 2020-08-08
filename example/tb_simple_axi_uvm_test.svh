@@ -16,8 +16,9 @@ class simple_axi_uvm_test_example extends uvm_test;
     endfunction
 
     task run_phase(uvm_phase phase);
-        issue_one_trans_seq seq = issue_one_trans_seq::type_id::create("seq");
-        uvm_report_info("TEST", "Hello World from class test");
+        //issue_one_trans_seq seq = issue_one_trans_seq::type_id::create("seq");
+        issue_read_write_trans_seq seq = issue_read_write_trans_seq::type_id::create("seq");
+        uvm_report_info("TEST", "simple_axi_uvm_test_example running");
         phase.raise_objection(this);
         seq.start(env.agent.sequencer);
         env.agent.driver.wait_trans_done();
