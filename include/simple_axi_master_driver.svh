@@ -1,6 +1,23 @@
+// simple_axi_master_driver.svh
+//      This file implements the simple_axi_master_driver.
+//      Get simple_axi_seq_item and distribute it to each axi channel(aw,w,b,ar,r)
+//      This driver checks whether the transaction is end or not in check_phase.
+//      You can wait for the transaction to complete by calling wait_trans_done ().
+//
+// Copyright (c) 2020 Akira Nishiyama.
+// Released under the MIT license
+// https://opensource.org/licenses/mit-license.php
+//
+// Configs:
+//      vif(simple_axi_if): simple_axi_if interface for driver.
+//      axi_transaction_mode(bit): 1 for burst access. 0 for single access.
+//                                 Burst access means trying to transfer all transaction items.
+//                                 Single access means getting one transaction item at a time.
+//
 class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
     `uvm_component_utils(simple_axi_master_driver)
     virtual simple_axi_if vif;
+    bit transaction_mode=0;//1:burst, 0:signle
     simple_axi_seq_item awchannel[$];
     simple_axi_seq_item wchannel[$];
     simple_axi_seq_item bchannel[$];
@@ -19,6 +36,9 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
         super.build_phase(phase);
         if(!uvm_config_db#(virtual simple_axi_if)::get(this, "", "vif", vif))
             `uvm_fatal("NOVIF",{"virtual interface must be set for: ",get_full_name(),".vif"});
+        uvm_config_db#(bit)::get(this,"","axi_transaction_mode", transaction_mode);
+        if(transaction_mode == 0) uvm_report_info("CONFIG","single transaction mode");
+        else uvm_report_info("CONFIG", "burst transaction mode");
     endfunction: build_phase
 
     task run_phase(uvm_phase phase);
@@ -32,6 +52,7 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
                     simple_axi_seq_item::WRITE: do_write_transaction(trans_item);
                     simple_axi_seq_item::READ:  do_read_transaction(trans_item);
                 endcase
+                if(transaction_mode == 0) wait_trans_done();
                 seq_item_port.item_done();
             end
             run_awchannel();

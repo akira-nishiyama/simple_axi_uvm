@@ -1,3 +1,11 @@
+// tb_simple_axi_uvm_sequence
+//      This file implements the sequence for simple_axi_uvm_pkg.
+//      
+// Copyright (c) 2020 Akira Nishiyama.
+// Released under the MIT license
+// https://opensource.org/licenses/mit-license.php
+//
+
 class issue_one_trans_seq extends simple_axi_master_base_sequence;
     `uvm_object_utils(issue_one_trans_seq)
     function new(string name="issue_one_trans_seq");

@@ -1,3 +1,12 @@
+// simple_axi_master_base_sequence.svh
+//      This file implements the base sequence for simple_axi_master.
+//      Base sequence raise_objection in pre_body() and drop_objection in post_body().
+//      
+// Copyright (c) 2020 Akira Nishiyama.
+// Released under the MIT license
+// https://opensource.org/licenses/mit-license.php
+//
+
 virtual class simple_axi_master_base_sequence extends uvm_sequence #(simple_axi_seq_item);
     function new(string name="simple_axi_mster_base_sequence");
         super.new(name);

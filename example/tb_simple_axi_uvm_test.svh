@@ -1,3 +1,11 @@
+// tb_simple_axi_uvm_test.svh
+//      This file implements the test for tb_simple_axi_uvm.
+//      
+// Copyright (c) 2020 Akira Nishiyama.
+// Released under the MIT license
+// https://opensource.org/licenses/mit-license.php
+//
+
 class simple_axi_uvm_test_example extends uvm_test;
     `uvm_component_utils(simple_axi_uvm_test_example)
     `uvm_new_func

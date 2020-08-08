@@ -1,3 +1,11 @@
+// simple_axi_master_agent.svh
+//      This file implements the simple_axi_master_agent.
+//      simple_axi_master is consists of driver, sequencer and monitor.
+//      
+// Copyright (c) 2020 Akira Nishiyama.
+// Released under the MIT license
+// https://opensource.org/licenses/mit-license.php
+//
 class simple_axi_master_agent extends uvm_agent;
     `uvm_component_utils(simple_axi_master_agent)
     `uvm_new_func

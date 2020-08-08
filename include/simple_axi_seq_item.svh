@@ -1,3 +1,13 @@
+// simple_axi_seq_item.svh
+//      This file implements the sequence_item for simple_axi.
+//      master driver accepts empty data read transaction.
+//      The master monitor completes the data field of the transaction and
+//      writes it to its own analysis port.
+// Copyright (c) 2020 Akira Nishiyama.
+// Released under the MIT license
+// https://opensource.org/licenses/mit-license.php
+//
+
 class simple_axi_seq_item extends uvm_sequence_item;
     typedef enum{READ, WRITE} simple_axi_access_type;
     

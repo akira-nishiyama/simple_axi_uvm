@@ -1,3 +1,11 @@
+// tb_simple_axi_uvm
+//      This file implements the testbench for simple_axi_uvm_pkg.
+//      
+// Copyright (c) 2020 Akira Nishiyama.
+// Released under the MIT license
+// https://opensource.org/licenses/mit-license.php
+//
+
 module tb_simple_axi_uvm;
     `include "uvm_macros.svh"
     import uvm_pkg::*;

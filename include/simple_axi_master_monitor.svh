@@ -1,3 +1,11 @@
+// simple_axi_master_monitor.svh
+//      This file implements the monitor for simple_axi_master.
+//      
+// Copyright (c) 2020 Akira Nishiyama.
+// Released under the MIT license
+// https://opensource.org/licenses/mit-license.php
+//
+
 class simple_axi_master_monitor extends uvm_monitor;
     `uvm_component_utils(simple_axi_master_monitor)
     virtual simple_axi_if vif;
