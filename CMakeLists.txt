@@ -1,57 +1,14 @@
 cmake_minimum_required(VERSION 3.1)
 enable_testing( ${INCLUDE_DIRS_EXAMPLE})
 
-find_program(   VIVADO_COMMAND
-                NAME vivado
-                HINTS ENV var
+find_package(   vivado_cmake_helper
+                HINTS $ENV{VIVADO_CMAKE_HELPER}
                 REQUIRED)
-
-find_file(  HELPER_SCRIPT_IPX
-            NAME create_ip.tcl
-            HINTS $ENV{VIVADO_CMAKE_HELPER})
-
-find_file(  HELPER_SCRIPT_PRJ_GEN
-            NAME project_generation.tcl
-            HINTS $ENV{VIVADO_CMAKE_HELPER})
-
-find_file(  HELPER_SCRIPT_IMPORT_BD
-            NAME vivado_import_bd.tcl
-            HINTS $ENV{VIVADO_CMAKE_HELPER})
-
-find_file(  HELPER_SCRIPT_EXPORT_SIM
-            NAME vivado_export_sim.tcl
-            HINTS $ENV{VIVADO_CMAKE_HELPER})
-
-find_file(  HELPER_SCRIPT_OPEN_WDB
-            NAME vivado_open_wdb.tcl
-            HINTS $ENV{VIVADO_CMAKE_HELPER})
-
-find_file(  VIVADO_IPX_EXPORT_CMAKE
-            NAME vivado_ipx_export.cmake
-            HINTS $ENV{VIVADO_CMAKE_HELPER}
-            REQUIRED)
-
-find_file(  VIVADO_ADD_SIM_CMAKE
-            NAME vivado_add_sim.cmake
-            HINTS $ENV{VIVADO_CMAKE_HELPER})
-
-find_file(  HELPER_SCRIPT_ADD_BD
-            NAME vivado_import_bd.tcl
-            HINTS $ENV{VIVADO_CMAKE_HELPER})
 
 #version fixed to 1.0 due to vivado 2019.2 restriction.
 project(simple_axi_uvm
     VERSION 1.0
     LANGUAGES NONE)
-
-set(CP "cp")
-set(CP_OPTION "-rf")
-set(MV "mv")
-set(RM "rm")
-set(RM_OPTION "-rf")
-set(SED "sed")
-set(MKDIR "mkdir")
-set(MKDIR_OPTION "-p")
 
 set(VENDOR "Akira_Nishiyama")
 set(LIBRARY_NAME "user")
@@ -88,8 +45,7 @@ set(SIMSET_NAME "sim_1")
 
 #create block design scripts
 
-include(${VIVADO_IPX_EXPORT_CMAKE})
-project_generation( ${PROJECT_NAME} ${VENDOR} ${LIBRARY_NAME} ${TARGET_DEVICE} ${SRC_FILES_FOR_PRJ} ${TESTBENCH_FILES_FOR_PRJ} ${IP_REPO_PATH} ${HELPER_SCRIPT_PRJ_GEN})
+project_generation( ${PROJECT_NAME} ${VENDOR} ${LIBRARY_NAME} ${TARGET_DEVICE} ${SRC_FILES_FOR_PRJ} ${TESTBENCH_FILES_FOR_PRJ} ${IP_REPO_PATH})
 
 add_custom_target( ${PROJECT_NAME} ALL
     DEPENDS prj_gen_${PROJECT_NAME}
@@ -111,8 +67,6 @@ list(APPEND INCLUDE_DIRS_EXAMPLE "-i ${CMAKE_CURRENT_SOURCE_DIR}/example")
 set(ADDITIONAL_VLOG_OPTS "-L uvm -d VIVADO_SIM ${INCLUDE_DIRS} ${INCLUDE_DIRS_EXAMPLE}")
 set(ADDITIONAL_ELAB_OPTS "-L uvm")
 set(ADDITIONAL_XSIM_OPTS "-testplusarg UVM_TESTNAME")
-
-include(${VIVADO_ADD_SIM_CMAKE})
 
 file(GLOB EXAMPLE_DEPENDENCIES  ${CMAKE_CURRENT_SOURCE_DIR}/include/*.svh
                                 ${CMAKE_CURRENT_SOURCE_DIR}/src/*.sv
