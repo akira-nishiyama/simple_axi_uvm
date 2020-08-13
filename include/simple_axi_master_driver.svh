@@ -17,6 +17,7 @@
 class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
     `uvm_component_utils(simple_axi_master_driver)
     virtual simple_axi_if vif;
+    uvm_analysis_port #(simple_axi_seq_item) item_port;
     bit transaction_mode=0;//1:burst, 0:signle
     simple_axi_seq_item awchannel[$];
     simple_axi_seq_item wchannel[$];
@@ -30,6 +31,7 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
     bit rchannel_busy=0;
     function new (string name ="simple_axi_master_driver", uvm_component parent);
         super.new(name, parent);
+        item_port = new("item_port",this);
     endfunction
 
     function void build_phase(uvm_phase phase);
@@ -51,6 +53,7 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
                     simple_axi_seq_item::WRITE: do_write_transaction(trans_item);
                     simple_axi_seq_item::READ:  do_read_transaction(trans_item);
                 endcase
+                item_port.write(trans_item);
                 if(transaction_mode == 0) wait_trans_done();
                 seq_item_port.item_done();
             end
