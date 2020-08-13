@@ -169,7 +169,7 @@ class simple_axi_master_monitor extends uvm_monitor;
             if(mon_item.length + 1 != mon_item.data.size())
                 `uvm_error("AXI-M-MON-RCHK", $sformatf("length %0d and amount of data %d mismatch.", mon_item.length, mon_item.data.size()));
             uvm_report_info("AXI-M-MON-RCHK",
-                $sformatf("write_transaction: addr=%08xh, length=%0d, resp_code=%p",mon_item.addr,mon_item.length, mon_item.resp_code),
+                $sformatf("read_transaction: addr=%08xh, length=%0d, resp_code=%p",mon_item.addr,mon_item.length, mon_item.resp_code),
                 UVM_LOW);
             foreach(mon_item.data[i]) uvm_report_info("AXI-M-MON-RCHK",$sformatf("data[%3d]=%08xh",i,mon_item.data[i]),UVM_LOW);
             item_port.write(mon_item);
