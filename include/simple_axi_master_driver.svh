@@ -138,6 +138,7 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
             end
             vif.axi_wvalid <= 1'b0;
             vif.axi_wlast  <= 1'b0;
+            @(posedge vif.aclk);
             uvm_report_info("AXI-M-DRV-W ", $sformatf("seq=%04d done",sequence_num));
             wchannel_busy = 0;
             ++sequence_num;
