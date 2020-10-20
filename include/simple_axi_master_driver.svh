@@ -45,6 +45,12 @@ class simple_axi_master_driver extends uvm_driver #(simple_axi_seq_item);
 
     task run_phase(uvm_phase phase);
         simple_axi_seq_item trans_item;
+        vif.axi_wvalid = 0;
+        vif.axi_wstrb = 0;
+        vif.axi_wlast = 0;
+        vif.axi_bready = 0;
+        vif.axi_awvalid = 0;
+        vif.axi_rvalid = 0;
         @(posedge vif.arstn);// wait negate reset
         fork
             forever begin
